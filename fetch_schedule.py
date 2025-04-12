@@ -2,7 +2,22 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 import time
+import os
+import platform
+
+options = Options()
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+
+if platform.system() == "Linux":
+    driver = webdriver.Chrome(options=options)
+else:
+    driver_path = "D:/WebDrivers/chromedriver.exe"
+    driver = webdriver.Chrome(executable_path=driver_path, options=options)
+
 
 # Replace with the path to your ChromeDriver
 CHROMEDRIVER_PATH = "D:/WebDrivers/chromedriver.exe"
