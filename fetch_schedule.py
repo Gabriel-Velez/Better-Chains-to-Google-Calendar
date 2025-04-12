@@ -4,7 +4,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
-import os
 import platform
 
 options = Options()
@@ -19,17 +18,9 @@ else:
     driver = webdriver.Chrome(executable_path=driver_path, options=options)
 
 
-# Replace with the path to your ChromeDriver
-CHROMEDRIVER_PATH = "D:/WebDrivers/chromedriver.exe"
-
 # Replace with your actual login credentials
 USERNAME = "gabriel.dan.velez@gmail.com"
 PASSWORD = "881967"
-
-# Setup
-service = Service(CHROMEDRIVER_PATH)
-options = webdriver.ChromeOptions()
-driver = webdriver.Chrome(service=service, options=options)
 
 # 1. Go to login page
 driver.get("https://portlandpie.betterchains.com/user/login")
