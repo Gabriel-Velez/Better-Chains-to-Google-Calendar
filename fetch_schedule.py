@@ -18,8 +18,8 @@ else:
     driver_path = "D:/WebDrivers/chromedriver.exe"
     driver = webdriver.Chrome(executable_path=driver_path, options=options)
 
-USERNAME = os.environ["BETTERCHAINS_USER"]
-PASSWORD = os.environ["BETTERCHAINS_PASS"]
+USERNAME = os.environ["USERNAME"]
+PASSWORD = os.environ["PASSWORD"]
 
 # 1. Go to login page
 driver.get("https://portlandpie.betterchains.com/user/login")
