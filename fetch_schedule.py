@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -16,9 +17,6 @@ if platform.system() == "Linux":
 else:
     driver_path = "D:/WebDrivers/chromedriver.exe"
     driver = webdriver.Chrome(executable_path=driver_path, options=options)
-
-
-import os
 
 USERNAME = os.environ["BETTERCHAINS_USER"]
 PASSWORD = os.environ["BETTERCHAINS_PASS"]
