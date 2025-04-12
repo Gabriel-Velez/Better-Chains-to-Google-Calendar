@@ -18,9 +18,10 @@ else:
     driver = webdriver.Chrome(executable_path=driver_path, options=options)
 
 
-# Replace with your actual login credentials
-USERNAME = "gabriel.dan.velez@gmail.com"
-PASSWORD = "881967"
+import os
+
+USERNAME = os.environ["BETTERCHAINS_USER"]
+PASSWORD = os.environ["BETTERCHAINS_PASS"]
 
 # 1. Go to login page
 driver.get("https://portlandpie.betterchains.com/user/login")

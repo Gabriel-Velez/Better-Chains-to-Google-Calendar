@@ -39,8 +39,8 @@ jobs:
 
       - name: Run schedule fetcher
         env:
-          USERNAME: ${{ secrets.BETTERCHAINS_USERNAME }}
-          PASSWORD: ${{ secrets.BETTERCHAINS_PASSWORD }}
+          USERNAME: ${{ secrets.BETTERCHAINS_USER }}
+          PASSWORD: ${{ secrets.BETTERCHAINS_PASS }}
         run: python fetch_schedule.py
 
       - name: Export to Google Calendar
