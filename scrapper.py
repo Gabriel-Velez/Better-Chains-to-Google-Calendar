@@ -2,6 +2,13 @@ from bs4 import BeautifulSoup # type: ignore
 from datetime import datetime, timedelta
 import re
 
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+service = build("calendar", "v3", credentials=creds)
+
 SHIFT_RULES = {
     "Monday": {"default_start": "15:00", "default_end": "20:00"},
     "Tuesday": {"default_start": "15:00", "default_end": "20:00"},
@@ -92,12 +99,23 @@ def get_shift_times(shift):
         },
     ]
 
-print("\nFinal Calendar Events:\n")
-
 for shift in parsed_schedule:
     if shift.get("off"):
-        print(f"Day Off: {shift['date']}")
         continue
 
     for event in get_shift_times(shift):
-        print(f"{event['title']}: {event['start'].strftime('%A %Y-%m-%d %I:%M %p')} to {event['end'].strftime('%I:%M %p')}")
+        calendar_event = {
+            "summary": event["title"],
+            "start": {
+                "dateTime": event["start"].isoformat(),
+                "timeZone": "America/New_York",
+            },
+            "end": {
+                "dateTime": event["end"].isoformat(),
+                "timeZone": "America/New_York",
+            },
+            "description": "Auto-synced from BetterChains schedule",
+        }
+
+        added_event = service.events().insert(calendarId="primary", body=calendar_event).execute()
+        print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
