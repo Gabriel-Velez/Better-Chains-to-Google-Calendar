@@ -36,7 +36,9 @@ DEFAULT_SHIFT_END = {
 # -------------------------
 ADD_TRAVEL_TIME = True
 TRAVEL_TIME_DURATION = timedelta(minutes=30)
-TRAVEL_EVENT_COLOR = "8"
+TRAVEL_TIME_DEPARTURE_SUMMARY = "Travel Time: To Work"
+TRAVEL_TIME_ARIVAL_SUMMARY = "Travel Time: From Work"
+TRAVEL_EVENT_COLOR = "8"  # Gray
 # 1: Soft purple | 2: Light green | 3: Dark purple | 4: Salmon pink | 5: Yellow 
 # 6: Orange | 7: Blue-green | 8: Gray | 9: Blue | 10: Dark green | 11: Red
 
@@ -44,9 +46,9 @@ TRAVEL_EVENT_COLOR = "8"
 # -------------------------
 # Calendar Settings
 # -------------------------
-CALENDAR_SUMMARY = "Shift"
+CALENDAR_SUMMARY = "Work Shift"
 TIMEZONE = "America/New_York"
-SHIFT_EVENT_COLOR = "1"
+SHIFT_EVENT_COLOR = "9"  
 # 1: Soft purple | 2: Light green | 3: Dark purple | 4: Salmon pink | 5: Yellow 
 # 6: Orange | 7: Blue-green | 8: Gray | 9: Blue | 10: Dark green | 11: Red
 

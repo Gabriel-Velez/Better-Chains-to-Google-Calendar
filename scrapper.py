@@ -87,24 +87,34 @@ def get_shift_times(shift):
     shift_start = datetime.strptime(f"{shift['date']} {start_str}", "%Y-%m-%d %I:%M %p")
     shift_end = datetime.strptime(f"{shift['date']} {end_str}", "%Y-%m-%d %H:%M")
 
-    return [
+    events = [
         {
-            "title": "Travel Time: To Work",
-            "start": shift_start - timedelta(minutes=TRAVEL_TIME_MINUTES),
-            "end": shift_start,
-        },
-        {
-            "title": "Work Shift",
+            "title": CALENDAR_SUMMARY,
             "start": shift_start,
             "end": shift_end,
-        },
-        {
-            "title": "Travel Time: From Work",
-            "start": shift_end,
-            "end": shift_end + timedelta(minutes=TRAVEL_TIME_MINUTES),
-        },
+            "color": SHIFT_EVENT_COLOR
+        }
     ]
 
+    if ADD_TRAVEL_TIME:
+        travel_minutes = TRAVEL_TIME_DURATION.total_seconds() / 60
+        events.insert(0, {
+            "title": TRAVEL_TIME_DEPARTURE_SUMMARY,
+            "start": shift_start - timedelta(minutes=travel_minutes),
+            "end": shift_start,
+            "color": TRAVEL_EVENT_COLOR
+        })
+        events.append({
+            "title": TRAVEL_TIME_ARIVAL_SUMMARY,
+            "start": shift_end,
+            "end": shift_end + timedelta(minutes=travel_minutes),
+            "color": TRAVEL_EVENT_COLOR
+        })
+
+    return events
+
+
+# Main loop that adds events to Google Calendar
 for shift in parsed_schedule:
     if shift.get("off"):
         continue
@@ -114,13 +124,14 @@ for shift in parsed_schedule:
             "summary": event["title"],
             "start": {
                 "dateTime": event["start"].isoformat(),
-                "timeZone": "America/New_York",
+                "timeZone": TIMEZONE,
             },
             "end": {
                 "dateTime": event["end"].isoformat(),
-                "timeZone": "America/New_York",
+                "timeZone": TIMEZONE,
             },
             "description": "Auto-synced from BetterChains schedule",
+            "colorId": event["color"]
         }
 
         added_event = service.events().insert(calendarId="primary", body=calendar_event).execute()
