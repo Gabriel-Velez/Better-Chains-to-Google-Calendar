@@ -51,3 +51,4 @@ TIMEZONE = "America/New_York"
 SCHEDULE_URL = "https://portlandpie.betterchains.com/schedule"
 LOGIN_URL = "https://portlandpie.betterchains.com/user/login"
 SCOPES = ['https://www.googleapis.com/auth/calendar']
+

@@ -36,6 +36,8 @@ wait = WebDriverWait(driver, 15)
 email_input = wait.until(EC.presence_of_element_located((By.NAME, "username")))
 password_input = driver.find_element(By.NAME, "password")
 
+print("✅ USERNAME loaded:", bool(BETTERCHAINS_USER))
+
 email_input.send_keys(BETTERCHAINS_USER)
 password_input.send_keys(BETTERCHAINS_PASS + Keys.RETURN)
 time.sleep(20)

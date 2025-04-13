@@ -8,7 +8,6 @@ on:
 jobs:
   export-schedule:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -26,7 +25,8 @@ jobs:
       - name: Install ChromeDriver
         run: |
           CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          CHROMEDRIVER_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | jq -r ".channels.Stable.downloads.chromedriver[] | select(.platform == \"linux64\") | .url")
+          CHROMEDRIVER_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" \
+            | jq -r --arg ver "$CHROME_VERSION" '.channels.Stable.downloads.chromedriver[] | select(.platform == "linux64") | .url')
           wget -O chromedriver.zip $CHROMEDRIVER_URL
           unzip chromedriver.zip
           sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
@@ -39,12 +39,11 @@ jobs:
 
       - name: Run schedule fetcher
         env:
-          USERNAME: ${{ secrets.BETTERCHAINS_USER }}
-          PASSWORD: ${{ secrets.BETTERCHAINS_PASS }}
+          BETTERCHAINS_USER: ${{ secrets.BETTERCHAINS_USER }}
+          BETTERCHAINS_PASS: ${{ secrets.BETTERCHAINS_PASS }}
         run: python fetch_schedule.py
 
       - name: Export to Google Calendar
         env:
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
         run: python generate.py
