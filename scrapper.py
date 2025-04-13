@@ -114,7 +114,7 @@ def get_shift_times(shift):
     return events
 
 
-# Main loop that adds events to Google Calendar
+# 🧠 Main loop that adds events to Google Calendar
 for shift in parsed_schedule:
     if shift.get("off"):
         continue
@@ -134,23 +134,29 @@ for shift in parsed_schedule:
             "colorId": event["color"]
         }
 
-        # 🧹 Remove duplicates first
+        # 🧹 Remove duplicates first (without q param)
         existing_events = service.events().list(
             calendarId="primary",
             timeMin=event["start"].isoformat(),
             timeMax=event["end"].isoformat(),
-            q=event["title"],
             singleEvents=True
         ).execute().get("items", [])
-        
-        print("🕵️ Checking for duplicates:",
-            f"title={event['title']}",
-            f"timeMin={event['start'].isoformat()}",
-            f"timeMax={event['end'].isoformat()}")
+
+        print("🔍 Checking for duplicates:")
+        print(f"  ⤷ title={event['title']}")
+        print(f"  ⤷ timeMin={event['start'].isoformat()}")
+        print(f"  ⤷ timeMax={event['end'].isoformat()}")
 
         for existing_event in existing_events:
-            service.events().delete(calendarId="primary", eventId=existing_event["id"]).execute()
+            if existing_event.get("summary") == event["title"]:
+                service.events().delete(
+                    calendarId="primary",
+                    eventId=existing_event["id"]
+                ).execute()
 
         # ✅ Then insert new event
-        added_event = service.events().insert(calendarId="primary", body=calendar_event).execute()
+        added_event = service.events().insert(
+            calendarId="primary",
+            body=calendar_event
+        ).execute()
         print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
