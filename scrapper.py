@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup # type: ignore
 from datetime import datetime, timedelta
 import re
 import os, json
+from datetime import timedelta
+from dateutil import parser
 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -135,6 +137,34 @@ for shift in parsed_schedule:
             "description": "Auto-synced from BetterChains schedule",
             "colorId": event["color"]
         }
+        from datetime import timedelta
+
+        # 🧹 Smarter duplicate detection (±12 hours range, ±5 minutes time match)
+        search_start = (event["start"] - timedelta(hours=12)).isoformat()
+        search_end = (event["end"] + timedelta(hours=12)).isoformat()
+
+        existing_events = service.events().list(
+            calendarId="primary",
+            timeMin=search_start,
+            timeMax=search_end,
+            singleEvents=True
+        ).execute().get("items", [])
+
+        for existing_event in existing_events:
+            existing_summary = existing_event.get("summary")
+            existing_start = existing_event.get("start", {}).get("dateTime")
+
+            if not existing_summary or not existing_start:
+                continue
+
+            time_diff = abs((event["start"] - parser.parse(existing_start)).total_seconds())
+
+            if existing_summary == event["title"] and time_diff <= 300:  # within 5 min
+                print(f"  🗑️ Deleting duplicate: {existing_summary} at {existing_start}")
+                service.events().delete(
+                    calendarId="primary",
+                    eventId=existing_event["id"]
+                ).execute()
 
         added_event = service.events().insert(calendarId="primary", body=calendar_event).execute()
         print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
