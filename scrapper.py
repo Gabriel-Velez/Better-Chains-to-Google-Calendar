@@ -142,8 +142,8 @@ for shift in parsed_schedule:
 
         existing_events = service.events().list(
             calendarId="primary",
-            timeMin=event["start"].isoformat(),
-            timeMax=event["end"].isoformat(),
+            timeMin = event["start"].isoformat() + "Z",
+            timeMax = event["end"].isoformat() + "Z",
             singleEvents=True
         ).execute().get("items", [])
 
