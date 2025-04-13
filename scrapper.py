@@ -140,24 +140,24 @@ for shift in parsed_schedule:
         print(f"  ⤷ timeMin = {event['start'].isoformat()}")
         print(f"  ⤷ timeMax = {event['end'].isoformat()}")
 
+        # Set a 5-minute buffer window to catch slight discrepancies
+        time_min = (event["start"] - timedelta(minutes=5)).isoformat() + "Z"
+        time_max = (event["end"] + timedelta(minutes=5)).isoformat() + "Z"
+
         existing_events = service.events().list(
             calendarId="primary",
-            timeMin = event["start"].isoformat() + "Z",
-            timeMax = event["end"].isoformat() + "Z",
+            timeMin=time_min,
+            timeMax=time_max,
             singleEvents=True
         ).execute().get("items", [])
 
         for existing_event in existing_events:
-            if existing_event.get("summary") == event["title"]:
-                print(f"  🗑️ Deleting duplicate: {existing_event['summary']}")
+            existing_summary = existing_event.get("summary")
+            existing_start = existing_event.get("start", {}).get("dateTime")
+            if existing_summary == event["title"] and existing_start:
+                print(f"  🗑️ Deleting duplicate: {existing_summary} at {existing_start}")
                 service.events().delete(
                     calendarId="primary",
                     eventId=existing_event["id"]
                 ).execute()
-
-        # ✅ Then insert new event
-        added_event = service.events().insert(
-            calendarId="primary",
-            body=calendar_event
-        ).execute()
-        print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
+            
