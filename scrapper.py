@@ -134,6 +134,11 @@ for shift in parsed_schedule:
             "colorId": event["color"]
         }
 
+        print("🔍 Checking for duplicates:")
+        print("  ↳ title:", event["title"])
+        print("  ↳ timeMin:", event["start"].isoformat())
+        print("  ↳ timeMax:", event["end"].isoformat())
+
         # 🧹 Remove duplicates first (without q param)
         existing_events = service.events().list(
             calendarId="primary",
