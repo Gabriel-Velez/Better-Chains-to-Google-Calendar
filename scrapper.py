@@ -134,5 +134,18 @@ for shift in parsed_schedule:
             "colorId": event["color"]
         }
 
+        # 🧹 Remove duplicates first
+        existing_events = service.events().list(
+            calendarId="primary",
+            timeMin=event["start"].isoformat(),
+            timeMax=event["end"].isoformat(),
+            q=event["title"],
+            singleEvents=True
+        ).execute().get("items", [])
+
+        for existing_event in existing_events:
+            service.events().delete(calendarId="primary", eventId=existing_event["id"]).execute()
+
+        # ✅ Then insert new event
         added_event = service.events().insert(calendarId="primary", body=calendar_event).execute()
         print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))

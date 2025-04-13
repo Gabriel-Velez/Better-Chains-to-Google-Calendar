@@ -48,7 +48,7 @@ TRAVEL_EVENT_COLOR = "8"  # Gray
 # -------------------------
 CALENDAR_SUMMARY = "Work Shift"
 TIMEZONE = "America/New_York"
-SHIFT_EVENT_COLOR = "9"  
+SHIFT_EVENT_COLOR = "1"  
 # 1: Soft purple | 2: Light green | 3: Dark purple | 4: Salmon pink | 5: Yellow 
 # 6: Orange | 7: Blue-green | 8: Gray | 9: Blue | 10: Dark green | 11: Red
 
