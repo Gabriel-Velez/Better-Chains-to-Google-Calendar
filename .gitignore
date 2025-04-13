@@ -12,3 +12,6 @@ __pycache__/
 # Ignore auth tokens
 token.json
 credentials.json
+
+# Ignore private config
+config_private.py

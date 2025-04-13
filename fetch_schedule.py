@@ -7,6 +7,12 @@ from selenium.webdriver.chrome.options import Options
 import time
 import platform
 
+#import config
+try:
+    from config_private import *
+except ImportError:
+    from config_public import *
+
 options = Options()
 options.add_argument("--headless")
 options.add_argument("--no-sandbox")
@@ -18,11 +24,8 @@ else:
     driver_path = "D:/WebDrivers/chromedriver.exe"
     driver = webdriver.Chrome(executable_path=driver_path, options=options)
 
-USERNAME = os.environ["USERNAME"]
-PASSWORD = os.environ["PASSWORD"]
-
 # 1. Go to login page
-driver.get("https://portlandpie.betterchains.com/user/login")
+driver.get(LOGIN_URL)
 time.sleep(3)
 
 # 2. Fill in login form
@@ -33,13 +36,12 @@ wait = WebDriverWait(driver, 15)
 email_input = wait.until(EC.presence_of_element_located((By.NAME, "username")))
 password_input = driver.find_element(By.NAME, "password")
 
-email_input.send_keys(USERNAME)
-password_input.send_keys(PASSWORD + Keys.RETURN)
+email_input.send_keys(BETTERCHAINS_USER)
+password_input.send_keys(BETTERCHAINS_PASS + Keys.RETURN)
 time.sleep(20)
 
-
 # 3. Go to schedule page
-driver.get("https://portlandpie.betterchains.com/schedule")
+driver.get(SCHEDULE_URL)
 time.sleep(3)
 
 # 4. Click the “Next Week” arrow
@@ -55,7 +57,6 @@ time.sleep(20)
 html = driver.page_source
 with open("next_week_schedule.html", "w", encoding="utf-8") as f:
     f.write(html)
-
 print("✅ Schedule saved to next_week_schedule.html")
 
 driver.quit()

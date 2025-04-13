@@ -1,26 +1,32 @@
 from bs4 import BeautifulSoup # type: ignore
 from datetime import datetime, timedelta
 import re
+import os, json
 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
+#import config
+try:
+    from config_private import *
+except ImportError:
+    from config_public import *
+
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+GOOGLE_TOKEN = os.environ["GOOGLE_TOKEN"]
+creds = Credentials.from_authorized_user_info(json.loads(GOOGLE_TOKEN), SCOPES)
 service = build("calendar", "v3", credentials=creds)
 
+# Convert string times in config into uniform 24hr format for fallback use
 SHIFT_RULES = {
-    "Monday": {"default_start": "15:00", "default_end": "20:00"},
-    "Tuesday": {"default_start": "15:00", "default_end": "20:00"},
-    "Wednesday": {"default_start": "15:00", "default_end": "20:00"},
-    "Thursday": {"default_start": "15:00", "default_end": "20:00"},
-    "Friday": {"default_start": "15:00", "default_end": "21:00"},
-    "Saturday": {"default_start": "15:00", "default_end": "21:00"},
-    "Sunday": {"default_start": "15:00", "default_end": "20:00"},
+    day: {
+        "default_start": datetime.strptime(DEFAULT_SHIFT_START[day], "%I:%M %p").strftime("%H:%M"),
+        "default_end": datetime.strptime(DEFAULT_SHIFT_END[day], "%I:%M %p").strftime("%H:%M"),
+    }
+    for day in DEFAULT_SHIFT_START
 }
 
-TRAVEL_TIME_MINUTES = 30
-
+TRAVEL_TIME_MINUTES = TRAVEL_TIME_DURATION.total_seconds() / 60
 
 # Open the HTML file
 with open("Better Chains - My Schedule.html", "r", encoding="utf-8") as f:
