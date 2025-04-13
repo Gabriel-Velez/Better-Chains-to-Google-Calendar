@@ -139,28 +139,26 @@ for shift in parsed_schedule:
         }
         from datetime import timedelta
 
-        # 🧹 Smarter duplicate detection (±12 hours range, ±5 minutes time match)
-        search_start = (event["start"] - timedelta(hours=12)).isoformat()
-        search_end = (event["end"] + timedelta(hours=12)).isoformat()
-
+        # 🧹 Remove existing event if same title & start time (within ±5 seconds)
         existing_events = service.events().list(
             calendarId="primary",
-            timeMin=search_start,
-            timeMax=search_end,
+            timeMin=event["start"].isoformat(),
+            timeMax=event["end"].isoformat(),
             singleEvents=True
         ).execute().get("items", [])
 
         for existing_event in existing_events:
-            existing_summary = existing_event.get("summary")
-            existing_start = existing_event.get("start", {}).get("dateTime")
-
-            if not existing_summary or not existing_start:
+            if existing_event.get("summary") != event["title"]:
                 continue
 
-            time_diff = abs((event["start"] - parser.parse(existing_start)).total_seconds())
+            existing_start = existing_event.get("start", {}).get("dateTime")
+            if not existing_start:
+                continue
 
-            if existing_summary == event["title"] and time_diff <= 300:  # within 5 min
-                print(f"  🗑️ Deleting duplicate: {existing_summary} at {existing_start}")
+            # Compare start times within 5 seconds
+            time_diff = abs(parser.parse(existing_start) - event["start"]).total_seconds()
+            if time_diff <= 5:
+                print(f"🗑️ Deleting duplicate: {event['title']} at {existing_start}")
                 service.events().delete(
                     calendarId="primary",
                     eventId=existing_event["id"]
