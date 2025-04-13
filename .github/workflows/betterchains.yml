@@ -70,6 +70,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: schedule
+          path: .
+
+      - name: Rename HTML file
+        run: mv next_week_schedule.html "Better Chains - My Schedule.html"
 
       - name: Export to Google Calendar
         env:
