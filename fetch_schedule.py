@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
 import platform
+from datetime import date, timedelta
 
 #import config
 try:
@@ -42,20 +43,21 @@ email_input.send_keys(BETTERCHAINS_USER)
 password_input.send_keys(BETTERCHAINS_PASS + Keys.RETURN)
 time.sleep(20)
 
-# 3. Go to schedule page
-driver.get(SCHEDULE_URL)
-time.sleep(3)
 
-# 4. Click the “Next Week” arrow
-arrows = WebDriverWait(driver, 15).until(
-    EC.presence_of_all_elements_located((By.CSS_SELECTOR, "button.btn.btn-primary"))
-)
+# 3. Calculate date for next week's Tuesday
+today = date.today()
+days_until_next_tuesday = (1 - today.weekday() + 7) % 7
+days_until_next_tuesday = days_until_next_tuesday or 7
+next_tuesday = today + timedelta(days=days_until_next_tuesday)
+formatted_date = next_tuesday.strftime("%Y-%m-%d")
 
-# Click the SECOND one (next week)
-arrows[1].click()
-time.sleep(20)
+# 4. Append ?date=YYYY-MM-DD to the base SCHEDULE_URL
+full_schedule_url = f"{SCHEDULE_URL}?date={formatted_date}"
 
-# 5. Save HTML
+# 5. Go to schedule page
+driver.get(full_schedule_url)
+
+# 6. Save HTML
 html = driver.page_source
 with open("next_week_schedule.html", "w", encoding="utf-8") as f:
     f.write(html)
