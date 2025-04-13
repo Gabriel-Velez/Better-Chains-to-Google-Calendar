@@ -1,3 +1,4 @@
+from datetime import timedelta
 from bs4 import BeautifulSoup # type: ignore
 from datetime import datetime, timedelta
 import re
@@ -134,15 +135,12 @@ for shift in parsed_schedule:
             "colorId": event["color"]
         }
 
-        # 🧹 Remove any existing event with the same time and title
-        print("🔍 Checking for duplicates:")
+        # 🧹 Remove any existing event with the same title and similar start time
+        time_min = (event["start"] - timedelta(minutes=5)).isoformat()
+        time_max = (event["start"] + timedelta(minutes=5)).isoformat()
+        print("🔍 Checking for duplicates within ±5 minutes:")
         print(f"  ⤷ title = {event['title']}")
-        print(f"  ⤷ timeMin = {event['start'].isoformat()}")
-        print(f"  ⤷ timeMax = {event['end'].isoformat()}")
-
-        # Set a 5-minute buffer window to catch slight discrepancies
-        time_min = (event["start"] - timedelta(minutes=5)).isoformat() + "Z"
-        time_max = (event["end"] + timedelta(minutes=5)).isoformat() + "Z"
+        print(f"  ⤷ window = {time_min} to {time_max}")
 
         existing_events = service.events().list(
             calendarId="primary",
@@ -152,12 +150,16 @@ for shift in parsed_schedule:
         ).execute().get("items", [])
 
         for existing_event in existing_events:
-            existing_summary = existing_event.get("summary")
-            existing_start = existing_event.get("start", {}).get("dateTime")
-            if existing_summary == event["title"] and existing_start:
-                print(f"  🗑️ Deleting duplicate: {existing_summary} at {existing_start}")
+            if existing_event.get("summary") == event["title"]:
+                print(f"  🗑️ Deleting duplicate: {existing_event['summary']}")
                 service.events().delete(
                     calendarId="primary",
                     eventId=existing_event["id"]
                 ).execute()
-            
+
+        # ✅ Then insert new event
+        added_event = service.events().insert(
+            calendarId="primary",
+            body=calendar_event
+        ).execute()
+        print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
