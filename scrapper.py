@@ -139,7 +139,7 @@ for shift in parsed_schedule:
         }
         from datetime import timedelta
 
-        # 🧹 Remove existing event if same title & start time (within ±5 seconds)
+        # 🔁 Check for existing duplicates
         existing_events = service.events().list(
             calendarId="primary",
             timeMin=event["start"].isoformat(),
@@ -147,22 +147,31 @@ for shift in parsed_schedule:
             singleEvents=True
         ).execute().get("items", [])
 
+        print(f"🔍 Found {len(existing_events)} existing events to check")
+
         for existing_event in existing_events:
-            if existing_event.get("summary") != event["title"]:
+            existing_summary = existing_event.get("summary")
+            existing_start = existing_event.get("start", {}).get("dateTime")
+
+            if not existing_summary or not existing_start:
+                print("⚠️ Skipping: missing summary or start time")
                 continue
 
-            existing_start = existing_event.get("start", {}).get("dateTime")
-            if not existing_start:
+            print(f"🧪 Comparing to: {existing_summary} at {existing_start}")
+
+            if existing_summary != event["title"]:
+                print(f"❌ Title mismatch: {existing_summary} vs {event['title']}")
                 continue
 
             # Compare start times within 5 seconds
             time_diff = abs(parser.parse(existing_start) - event["start"]).total_seconds()
+            print(f"⏱️ Time difference: {time_diff:.2f}s")
+
             if time_diff <= 5:
-                print(f"🗑️ Deleting duplicate: {event['title']} at {existing_start}")
+                print(f"🗑️ Deleting duplicate: {existing_summary} at {existing_start}")
                 service.events().delete(
                     calendarId="primary",
                     eventId=existing_event["id"]
                 ).execute()
-
         added_event = service.events().insert(calendarId="primary", body=calendar_event).execute()
         print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
