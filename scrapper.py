@@ -1,119 +1,172 @@
-from datetime import timedelta
-from config_private import *
+from bs4 import BeautifulSoup # type: ignore
+from datetime import datetime, timedelta
+import re
+import os, json
+
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from bs4 import BeautifulSoup
-from dateutil import parser
-import os
-import json
 
-# Read HTML file
+from betterchains import (
+    SHIFT_EVENT_COLOR,
+    TRAVEL_EVENT_COLOR,
+    TRAVEL_TIME_DURATION,
+    TIMEZONE,
+    CALENDAR_SUMMARY,
+    ADD_TRAVEL_TIME,
+    TRAVEL_TIME_DEPARTURE_SUMMARY,
+    TRAVEL_TIME_ARIVAL_SUMMARY,
+)
+
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+GOOGLE_TOKEN = os.environ["GOOGLE_TOKEN"]
+creds = Credentials.from_authorized_user_info(json.loads(GOOGLE_TOKEN), SCOPES)
+service = build("calendar", "v3", credentials=creds)
+
+# Convert string times in config into uniform 24hr format for fallback use
+SHIFT_RULES = {
+    day: {
+        "default_start": datetime.strptime(DEFAULT_SHIFT_START[day], "%I:%M %p").strftime("%H:%M"),
+        "default_end": datetime.strptime(DEFAULT_SHIFT_END[day], "%I:%M %p").strftime("%H:%M"),
+    }
+    for day in DEFAULT_SHIFT_START
+}
+
+TRAVEL_TIME_MINUTES = TRAVEL_TIME_DURATION.total_seconds() / 60
+
+# Open the HTML file
 with open("Better Chains - My Schedule.html", "r", encoding="utf-8") as f:
     html = f.read()
 
+# Parse it with BeautifulSoup
 soup = BeautifulSoup(html, "html.parser")
-events = []
 
-for div in soup.find_all("div", class_="fc-event-time"): 
-    parent = div.find_parent("a")
-    text = parent.text.strip()
-    day = parent["data-date"]
-    parts = text.split(" - ")
-    if len(parts) != 2:
-        continue
-    start_time = parts[0].strip()
-    end_time = parts[1].strip()
+# Find all day containers
+day_blocks = soup.find_all("div")
+shift_blocks = soup.find_all("div", class_="foh-schedule-shifts")
 
-    if "off" in text.lower():
-        events.append({"off": True})
+parsed_schedule = []
+
+for block in shift_blocks:
+    # Get the day label (e.g., "Friday (4/11)")
+    day_head = block.find("div", class_="day-head")
+    if not day_head:
         continue
 
-    if "am" not in start_time.lower() and "pm" not in start_time.lower():
-        start_time += "am"
-    if "am" not in end_time.lower() and "pm" not in end_time.lower():
-        end_time += "pm"
+    # Remove anything like "Today" and extract just "Friday (4/11)"
+    clean_text = re.sub(r"Today.*", "", day_head.get_text()).strip()
 
-    start = parser.parse(f"{day} {start_time}")
-    end = parser.parse(f"{day} {end_time}")
-    title = "Work Shift"
+    # Match the date inside parentheses
+    match = re.match(r"(.+)\((\d+/\d+)\)", clean_text)
+    if not match:
+        continue
 
-    events.append({
-        "title": title,
-        "start": start,
-        "end": end,
-        "color": SHIFT_EVENT_COLOR,
-    })
+    weekday = match.group(1).strip()
+    date_str = match.group(2).strip()
+    weekday = weekday.strip()
+    date_str = date_str.strip(")")
+
+    # Convert MM/DD to full YYYY-MM-DD (using 2025 as the year)
+    try:
+        month, day = date_str.split("/")
+        date_iso = f"2025-{int(month):02}-{int(day):02}"
+    except ValueError:
+        continue  # skip if malformed
+
+    # Check if there's a <bdo> tag with the time
+    time_bdo = block.find("bdo")
+    if time_bdo:
+        start_time = time_bdo.text.strip()
+        parsed_schedule.append({"date": date_iso, "start_time": start_time})
+    else:
+        parsed_schedule.append({"date": date_iso, "off": True})
+
+
+def get_shift_times(shift):
+    date_obj = datetime.strptime(shift["date"], "%Y-%m-%d")
+    day_name = date_obj.strftime("%A")
+    fallback = SHIFT_RULES[day_name]
+
+    start_str = shift.get("start_time", fallback["default_start"])
+    end_str = fallback["default_end"]
+
+    shift_start = datetime.strptime(f"{shift['date']} {start_str}", "%Y-%m-%d %I:%M %p")
+    shift_end = datetime.strptime(f"{shift['date']} {end_str}", "%Y-%m-%d %H:%M")
+
+    events = [
+        {
+            "title": CALENDAR_SUMMARY,
+            "start": shift_start,
+            "end": shift_end,
+            "color": SHIFT_EVENT_COLOR
+        }
+    ]
 
     if ADD_TRAVEL_TIME:
-        travel_start = start - TRAVEL_TIME_DURATION
-        travel_end = start
-        events.append({
+        travel_minutes = TRAVEL_TIME_DURATION.total_seconds() / 60
+        events.insert(0, {
             "title": TRAVEL_TIME_DEPARTURE_SUMMARY,
-            "start": travel_start,
-            "end": travel_end,
-            "color": TRAVEL_EVENT_COLOR,
+            "start": shift_start - timedelta(minutes=travel_minutes),
+            "end": shift_start,
+            "color": TRAVEL_EVENT_COLOR
         })
-
-        travel_start_back = end
-        travel_end_back = end + TRAVEL_TIME_DURATION
         events.append({
             "title": TRAVEL_TIME_ARIVAL_SUMMARY,
-            "start": travel_start_back,
-            "end": travel_end_back,
-            "color": TRAVEL_EVENT_COLOR,
+            "start": shift_end,
+            "end": shift_end + timedelta(minutes=travel_minutes),
+            "color": TRAVEL_EVENT_COLOR
         })
 
-# Auth
-print("🔐 GOOGLE_TOKEN loaded?", bool(GOOGLE_TOKEN))
-with open("token.json", "w") as f:
-    f.write(GOOGLE_TOKEN)
-    print("✅ Token saved to token.json")
+    return events
 
-creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-service = build("calendar", "v3", credentials=creds)
-os.remove("token.json")
 
-# Main loop that adds events to Google Calendar
-for event in events:
-    calendar_event = {
-        "summary": event["title"],
-        "start": {
-            "dateTime": event["start"].isoformat(),
-            "timeZone": TIMEZONE,
-        },
-        "end": {
-            "dateTime": event["end"].isoformat(),
-            "timeZone": TIMEZONE,
-        },
-        "description": "Auto-synced from BetterChains schedule",
-        "colorId": event["color"]
-    }
+# 🧠 Main loop that adds events to Google Calendar
+for shift in parsed_schedule:
+    if shift.get("off"):
+        continue
 
-    # 🧹 Remove any existing event with the same time and title (±5 minutes)
-    print("🔍 Checking for duplicates within ±5 minutes:")
-    print(f"  ⤷ title = {event['title']}")
-    window_start = (event["start"] - timedelta(minutes=5)).isoformat()
-    window_end = (event["end"] + timedelta(minutes=5)).isoformat()
-    print(f"  ⤷ window = {window_start} to {window_end}")
+    for event in get_shift_times(shift):
+        calendar_event = {
+            "summary": event["title"],
+            "start": {
+                "dateTime": event["start"].isoformat(),
+                "timeZone": TIMEZONE,
+            },
+            "end": {
+                "dateTime": event["end"].isoformat(),
+                "timeZone": TIMEZONE,
+            },
+            "description": "Auto-synced from BetterChains schedule",
+            "colorId": event["color"]
+        }
 
-    existing_events = service.events().list(
-        calendarId="primary",
-        timeMin=window_start,
-        timeMax=window_end,
-        singleEvents=True
-    ).execute().get("items", [])
+        print("🔍 Checking for duplicates:")
+        print("  ↳ title:", event["title"])
+        print("  ↳ timeMin:", event["start"].isoformat())
+        print("  ↳ timeMax:", event["end"].isoformat())
 
-    for existing_event in existing_events:
-        if existing_event.get("summary") == event["title"]:
-            print(f"  🗑️ Deleting duplicate: {existing_event['summary']}")
-            service.events().delete(
-                calendarId="primary",
-                eventId=existing_event["id"]
-            ).execute()
+        # 🧹 Remove duplicates first (without q param)
+        existing_events = service.events().list(
+            calendarId="primary",
+            timeMin=event["start"].isoformat(),
+            timeMax=event["end"].isoformat(),
+            singleEvents=True
+        ).execute().get("items", [])
 
-    added_event = service.events().insert(
-        calendarId="primary",
-        body=calendar_event
-    ).execute()
+        print("🔍 Checking for duplicates:")
+        print(f"  ⤷ title={event['title']}")
+        print(f"  ⤷ timeMin={event['start'].isoformat()}")
+        print(f"  ⤷ timeMax={event['end'].isoformat()}")
 
-    print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
+        for existing_event in existing_events:
+            if existing_event.get("summary") == event["title"]:
+                service.events().delete(
+                    calendarId="primary",
+                    eventId=existing_event["id"]
+                ).execute()
+
+        # ✅ Then insert new event
+        added_event = service.events().insert(
+            calendarId="primary",
+            body=calendar_event
+        ).execute()
+        print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
