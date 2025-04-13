@@ -142,6 +142,11 @@ for shift in parsed_schedule:
             q=event["title"],
             singleEvents=True
         ).execute().get("items", [])
+        
+        print("🕵️ Checking for duplicates:",
+            f"title={event['title']}",
+            f"timeMin={event['start'].isoformat()}",
+            f"timeMax={event['end'].isoformat()}")
 
         for existing_event in existing_events:
             service.events().delete(calendarId="primary", eventId=existing_event["id"]).execute()
