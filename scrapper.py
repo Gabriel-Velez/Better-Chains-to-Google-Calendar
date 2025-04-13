@@ -33,7 +33,7 @@ with open("Better Chains - My Schedule.html", "r", encoding="utf-8") as f:
     html = f.read()
 
 # Parse it with BeautifulSoup
-soup = BeautifulSoup(html, "lxml")
+soup = BeautifulSoup(html, "html.parser")
 
 # Find all day containers
 day_blocks = soup.find_all("div")
