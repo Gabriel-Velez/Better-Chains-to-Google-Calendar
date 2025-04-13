@@ -134,12 +134,12 @@ for shift in parsed_schedule:
             "colorId": event["color"]
         }
 
+        # 🧹 Remove any existing event with the same time and title
         print("🔍 Checking for duplicates:")
-        print("  ↳ title:", event["title"])
-        print("  ↳ timeMin:", event["start"].isoformat())
-        print("  ↳ timeMax:", event["end"].isoformat())
+        print(f"  ⤷ title = {event['title']}")
+        print(f"  ⤷ timeMin = {event['start'].isoformat()}")
+        print(f"  ⤷ timeMax = {event['end'].isoformat()}")
 
-        # 🧹 Remove duplicates first (without q param)
         existing_events = service.events().list(
             calendarId="primary",
             timeMin=event["start"].isoformat(),
@@ -147,13 +147,9 @@ for shift in parsed_schedule:
             singleEvents=True
         ).execute().get("items", [])
 
-        print("🔍 Checking for duplicates:")
-        print(f"  ⤷ title={event['title']}")
-        print(f"  ⤷ timeMin={event['start'].isoformat()}")
-        print(f"  ⤷ timeMax={event['end'].isoformat()}")
-
         for existing_event in existing_events:
             if existing_event.get("summary") == event["title"]:
+                print(f"  🗑️ Deleting duplicate: {existing_event['summary']}")
                 service.events().delete(
                     calendarId="primary",
                     eventId=existing_event["id"]
