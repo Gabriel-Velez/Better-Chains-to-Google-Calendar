@@ -13,7 +13,9 @@ except ImportError:
     from config_public import *
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-GOOGLE_TOKEN = os.environ["GOOGLE_TOKEN"]
+if not GOOGLE_TOKEN:
+    raise ValueError("❌ GOOGLE_TOKEN is missing from environment or config!")
+
 creds = Credentials.from_authorized_user_info(json.loads(GOOGLE_TOKEN), SCOPES)
 service = build("calendar", "v3", credentials=creds)
 
