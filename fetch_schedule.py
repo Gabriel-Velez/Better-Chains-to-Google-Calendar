@@ -43,12 +43,18 @@ password_input.send_keys(BETTERCHAINS_PASS + Keys.RETURN)
 time.sleep(20)
 
 
-# 3. Calculate date for next week's Tuesday
+# 3. Calculate target week's Tuesday
 today = date.today()
-days_until_next_tuesday = (1 - today.weekday() + 7) % 7
-days_until_next_tuesday = days_until_next_tuesday or 7
-next_tuesday = today + timedelta(days=days_until_next_tuesday)
-formatted_date = next_tuesday.strftime("%Y-%m-%d")
+
+if SCRAPE_WEEK == "current":
+    days_until_tuesday = (1 - today.weekday() + 7) % 7
+    target_tuesday = today + timedelta(days=days_until_tuesday if today.weekday() > 1 else 0)
+else:
+    days_until_next_tuesday = (1 - today.weekday() + 7) % 7
+    days_until_next_tuesday = days_until_next_tuesday or 7
+    target_tuesday = today + timedelta(days=days_until_next_tuesday)
+
+formatted_date = target_tuesday.strftime("%Y-%m-%d")
 
 # 4. Append ?date=YYYY-MM-DD to the base SCHEDULE_URL
 full_schedule_url = f"{SCHEDULE_URL}?date={formatted_date}"

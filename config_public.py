@@ -46,6 +46,7 @@ TRAVEL_EVENT_COLOR = "8"  # Gray
 # -------------------------
 # Calendar Settings
 # -------------------------
+SCRAPE_WEEK = "next"  # or "current"
 CALENDAR_SUMMARY = "Work Shift"
 TIMEZONE = "America/New_York"
 SHIFT_EVENT_COLOR = "1"  
