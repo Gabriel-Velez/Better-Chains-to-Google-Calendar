@@ -120,13 +120,13 @@ def get_shift_times(shift):
 
 print(f"🧪 Loaded {len(parsed_schedule)} shifts to process")
 
-# Main loop that adds events to Google Calendar
+# 🟢 Main loop that adds events to Google Calendar
 for shift in parsed_schedule:
     if shift.get("off"):
         continue
-    
+
     if "start_time" not in shift:
-        print(f"⏩ Skipping: no start_time on {shift.get('date')}")
+        print(f"⏭️  Skipping: no start_time on {shift.get('date')}")
         continue
 
     for event in get_shift_times(shift):
@@ -143,35 +143,10 @@ for shift in parsed_schedule:
             "description": "Auto-synced from BetterChains schedule",
             "colorId": event["color"]
         }
-        from datetime import timedelta
 
-        # ⛏️ Smarter duplicate detection: delete events with same title and time (within 5 seconds)
-        search_start = event["start"] - timedelta(minutes=5)
-        search_end = event["end"] + timedelta(minutes=5)
-
-        existing_events = service.events().list(
+        added_event = service.events().insert(
             calendarId="primary",
-            timeMin=search_start.isoformat(),
-            timeMax=search_end.isoformat(),
-            singleEvents=True
-        ).execute().get("items", [])
+            body=calendar_event
+        ).execute()
 
-        for existing_event in existing_events:
-            existing_summary = existing_event.get("summary")
-            existing_start_str = existing_event.get("start", {}).get("dateTime")
-
-            if not existing_summary or not existing_start_str:
-                continue
-
-            # Parse existing start as datetime
-            existing_start = parser.isoparse(existing_start_str)
-            time_diff = abs((existing_start - event["start"]).total_seconds())
-
-            if existing_summary == event["title"] and time_diff <= 5:
-                print(f"🗑️ Deleting duplicate: {existing_summary} at {existing_start}")
-                service.events().delete(
-                    calendarId="primary",
-                    eventId=existing_event["id"]
-                ).execute()
-        added_event = service.events().insert(calendarId="primary", body=calendar_event).execute()
         print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
