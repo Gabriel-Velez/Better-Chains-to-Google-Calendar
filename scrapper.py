@@ -117,9 +117,8 @@ def get_shift_times(shift):
 
     return events
 
-# ✅ Skip if nothing to export
-if not parsed_schedule:
-    print("📭 No shifts to process — skipping export.")
+
+print(f"🧪 Loaded {len(parsed_schedule)} shifts to process")
 
 # Main loop that adds events to Google Calendar
 for shift in parsed_schedule:
