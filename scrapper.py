@@ -124,6 +124,10 @@ print(f"🧪 Loaded {len(parsed_schedule)} shifts to process")
 for shift in parsed_schedule:
     if shift.get("off"):
         continue
+    
+    if "start_time" not in shift:
+        print(f"⏩ Skipping: no start_time on {shift.get('date')}")
+        continue
 
     for event in get_shift_times(shift):
         calendar_event = {
