@@ -117,6 +117,9 @@ def get_shift_times(shift):
 
     return events
 
+# ✅ Skip if nothing to export
+if not parsed_schedule:
+    print("📭 No shifts to process — skipping export.")
 
 # Main loop that adds events to Google Calendar
 for shift in parsed_schedule:
@@ -139,35 +142,29 @@ for shift in parsed_schedule:
         }
         from datetime import timedelta
 
-        # 🔁 Check for existing duplicates
+        # ⛏️ Smarter duplicate detection: delete events with same title and time (within 5 seconds)
+        search_start = event["start"] - timedelta(minutes=5)
+        search_end = event["end"] + timedelta(minutes=5)
+
         existing_events = service.events().list(
             calendarId="primary",
-            timeMin=event["start"].isoformat(),
-            timeMax=event["end"].isoformat(),
+            timeMin=search_start.isoformat(),
+            timeMax=search_end.isoformat(),
             singleEvents=True
         ).execute().get("items", [])
 
-        print(f"🔍 Found {len(existing_events)} existing events to check")
-
         for existing_event in existing_events:
             existing_summary = existing_event.get("summary")
-            existing_start = existing_event.get("start", {}).get("dateTime")
+            existing_start_str = existing_event.get("start", {}).get("dateTime")
 
-            if not existing_summary or not existing_start:
-                print("⚠️ Skipping: missing summary or start time")
+            if not existing_summary or not existing_start_str:
                 continue
 
-            print(f"🧪 Comparing to: {existing_summary} at {existing_start}")
+            # Parse existing start as datetime
+            existing_start = parser.isoparse(existing_start_str)
+            time_diff = abs((existing_start - event["start"]).total_seconds())
 
-            if existing_summary != event["title"]:
-                print(f"❌ Title mismatch: {existing_summary} vs {event['title']}")
-                continue
-
-            # Compare start times within 5 seconds
-            time_diff = abs(parser.parse(existing_start) - event["start"]).total_seconds()
-            print(f"⏱️ Time difference: {time_diff:.2f}s")
-
-            if time_diff <= 5:
+            if existing_summary == event["title"] and time_diff <= 5:
                 print(f"🗑️ Deleting duplicate: {existing_summary} at {existing_start}")
                 service.events().delete(
                     calendarId="primary",
