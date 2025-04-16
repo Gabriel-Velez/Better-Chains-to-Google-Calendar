@@ -4,9 +4,7 @@ import re
 import os, json
 from datetime import timedelta
 from dateutil import parser
-
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
+from auth_google import authenticate_google
 
 #import config
 try:
@@ -14,12 +12,7 @@ try:
 except ImportError:
     from config_public import *
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
-if not GOOGLE_TOKEN:
-    raise ValueError("❌ GOOGLE_TOKEN is missing from environment or config!")
-
-creds = Credentials.from_authorized_user_info(json.loads(GOOGLE_TOKEN), SCOPES)
-service = build("calendar", "v3", credentials=creds)
+service = authenticate_google()
 
 # Convert string times in config into uniform 24hr format for fallback use
 SHIFT_RULES = {
