@@ -8,7 +8,7 @@ from auth_google import authenticate_google
 
 #import config
 try:
-    from config_public import *
+    from config_private import *
 except ImportError:
     from config_public import *
 
