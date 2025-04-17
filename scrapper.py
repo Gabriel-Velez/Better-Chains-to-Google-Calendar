@@ -1,19 +1,21 @@
-from bs4 import BeautifulSoup # type: ignore
+from bs4 import BeautifulSoup  # type: ignore
 from datetime import datetime, timedelta
 import re
 import os, json
-from datetime import timedelta
 from dateutil import parser
 from auth_google import authenticate_google
-import yaml
 
-#import config
+# Import config
 try:
     from config_private import *
 except ImportError:
     from config_public import *
 
 service = authenticate_google()
+
+# 🔧 Grab DRY_RUN from environment variable
+DRY_RUN = os.environ.get("DRY_RUN", "false").lower() == "true"
+print(f"🧪 DRY_RUN mode: {DRY_RUN}")
 
 # Convert string times in config into uniform 24hr format for fallback use
 SHIFT_RULES = {
@@ -25,11 +27,6 @@ SHIFT_RULES = {
 }
 
 TRAVEL_TIME_MINUTES = TRAVEL_TIME_DURATION.total_seconds() / 60
-
-with open(".github/workflows/betterchains.yml", "r") as yml_file:
-    workflow_config = yaml.safe_load(yml_file)
-
-DRY_RUN = str(workflow_config.get("DRY_RUN", "false")).lower() == "true"
 print(f"🧪 DRY_RUN mode: {DRY_RUN}")
 
 # Open the HTML file
