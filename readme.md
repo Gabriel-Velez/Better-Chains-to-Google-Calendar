@@ -50,7 +50,7 @@ Customize shift settings in config_public.py:
    Event colors and timezone
    Week Scraped
    Betterchanins Organizaton
-   <pre lang="md">
+   </pre">
 
 
 # 🤖 Automation
@@ -63,9 +63,10 @@ You can change the time by editing GitHub workflow schedule in .github/workflows
       schedule:
          - cron: "0 15 * * 0" # <--HERE
       workflow_dispatch:
-   <pre>
+   </pre>
 
 How to edit the CRON expression
+
    <pre lang="md">
    0 15 * * 0
    ┬ ┬ ┬ ┬ ┬
@@ -74,15 +75,16 @@ How to edit the CRON expression
    │ │ └──────── Day of month (1 - 31)
    │ └────────── Hour (0 - 23)
    └──────────── Minute (0 - 59)
-   <pre lang="md">
+   </pre>
 
 You can also trigger it manually via the Actions tab.
 
 # 🧪 Debug Mode (Dry Run)
+
 **Enable DRY_RUN mode by setting the environment variable:**
 `DRY_RUN: "true"`
 
-This will simulate calendar creation without actually syncing events — useful for testing._
+This will simulate calendar creation without actually syncing events — useful for testing.\_
 
 # 🙋 FAQ
 
