@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup  # type: ignore
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import re
 import os, json
 from dateutil import parser
@@ -15,7 +15,8 @@ service = authenticate_google()
 
 # 🔧 Grab DRY_RUN from environment variable
 DRY_RUN = os.environ.get("DRY_RUN", "false").lower() == "true"
-print(f"🧪 DRY_RUN mode: {DRY_RUN}")
+if DRY_RUN:
+    print(f"🧪 DRY_RUN mode")
 
 # Convert string times in config into uniform 24hr format for fallback use
 SHIFT_RULES = {
@@ -60,10 +61,11 @@ for block in shift_blocks:
     weekday = weekday.strip()
     date_str = date_str.strip(")")
 
-    # Convert MM/DD to full YYYY-MM-DD (using 2025 as the year)
+    # Convert MM/DD to full YYYY-MM-DD 
+    today = date.today()
     try:
         month, day = date_str.split("/")
-        date_iso = f"2025-{int(month):02}-{int(day):02}"
+        date_iso = f"{today.year}-{int(month):02}-{int(day):02}"
     except ValueError:
         continue  # skip if malformed
 
