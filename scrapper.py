@@ -5,6 +5,7 @@ import os, json
 from datetime import timedelta
 from dateutil import parser
 from auth_google import authenticate_google
+import yaml
 
 #import config
 try:
@@ -25,7 +26,10 @@ SHIFT_RULES = {
 
 TRAVEL_TIME_MINUTES = TRAVEL_TIME_DURATION.total_seconds() / 60
 
-DRY_RUN = os.getenv("DRY_RUN", "false").lower() == "true"
+with open("betterchains.yml", "r") as yml_file:
+    workflow_config = yaml.safe_load(yml_file)
+
+DRY_RUN = str(workflow_config.get("DRY_RUN", "false")).lower() == "true"
 
 # Open the HTML file
 with open("Better Chains - My Schedule.html", "r", encoding="utf-8") as f:
