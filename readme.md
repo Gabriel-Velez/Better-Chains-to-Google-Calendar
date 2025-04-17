@@ -28,71 +28,73 @@ Automatically runs weekly via GitHub Actions
 └── .gitignore
  </pre>
 
-# ⚙️ Setup
+# 🍴 Forking & Customization
 
-## 1. 🔐 Environment Secrets (GitHub Actions)
+To use this project with your own BetterChains account:
 
-In your repo settings, set the following repository secrets:
+1.  Fork the repo to your own GitHub account.
 
-<pre lang="md">
-BETTERCHAINS_USER
-BETTERCHAINS_PASS
-GOOGLE_TOKEN
-</pre>
+2.  Go to your fork’s Settings > Secrets and variables > Actions and add these secrets:
 
-## 2. 🔑 Generate Your Google Token
+   <pre lang="md">
+   BETTERCHAINS_USER
+   BETTERCHAINS_PASS
+   GOOGLE_TOKEN
+   </pre>
 
-**Run locally:**
-`python generate_google_token.py`
+Customize shift settings in config_public.py:
 
-_Follow the instructions and paste the output into your GitHub secret GOOGLE_TOKEN._
+   <pre lang="md">
+   Default shift times
+   Travel time
+   Event colors and timezone
+   Week Scraped
+   Betterchanins Organizaton
+   <pre lang="md">
 
-# 🔧 Configuration
-
-Open config_public.py to configure:
-
-<pre lang="md">
-Default shift times
-Travel time settings
-Calendar event color
-Timezone and event summary format
-The week that is being scraped
-</pre>
-
-## Example:
-
-<pre lang="<pre lang="md">
-    DEFAULT_SHIFT_START = {
-        "Monday": "3:00 PM",
-        "Tuesday": "3:00 PM",
-        ...
-    }
- </pre>
 
 # 🤖 Automation
 
-The GitHub Actions workflow runs every Sunday at 11 AM (UTC) to fetch and sync next week's schedule.
+The GitHub Actions workflow runs every Sunday at 11 AM (UTC) to fetch and sync next week's schedule. 
+
+You can change the time by editing GitHub workflow schedule in .github/workflows/betterchains.yml. 
+   <pre lang="yml">
+   on:
+      schedule:
+         - cron: "0 15 * * 0" # <--HERE
+      workflow_dispatch:
+   <pre>
+
+How to edit the CRON expression
+   <pre lang="md">
+   0 15 * * 0
+   ┬ ┬ ┬ ┬ ┬
+   │ │ │ │ └──── Day of week (0 = Sunday)
+   │ │ │ └────── Month (1 - 12)
+   │ │ └──────── Day of month (1 - 31)
+   │ └────────── Hour (0 - 23)
+   └──────────── Minute (0 - 59)
+   <pre lang="md">
 
 You can also trigger it manually via the Actions tab.
 
 # 🧪 Debug Mode (Dry Run)
-
 **Enable DRY_RUN mode by setting the environment variable:**
 `DRY_RUN: "true"`
 
-_This will simulate calendar creation without actually syncing events — useful for testing._
+This will simulate calendar creation without actually syncing events — useful for testing._
 
 # 🙋 FAQ
 
-Q: What if my schedule isn’t posted yet?
+**Q:** What if my schedule isn’t posted yet?
 
-A: You’ll see a message `🕙 All shifts are marked as 'off'. No events to process.`
+**A:** You’ll see a message `🕙 All shifts are marked as 'off'. No events to process.`
 
 ---
 
-Q: Will it detect duplicate events?
+**Q:** Will it detect duplicate events?
 
-A: Yes, events with matching titles and timestamps are skipped or removed before adding new ones.
+**A:** Yes, events with matching titles and timestamps are skipped or removed before adding new ones.
 
 # 📜 License
 
