@@ -26,7 +26,7 @@ SHIFT_RULES = {
 
 TRAVEL_TIME_MINUTES = TRAVEL_TIME_DURATION.total_seconds() / 60
 
-with open("betterchains.yml", "r") as yml_file:
+with open(".github/workflows/betterchains.yml", "r") as yml_file:
     workflow_config = yaml.safe_load(yml_file)
 
 DRY_RUN = str(workflow_config.get("DRY_RUN", "false")).lower() == "true"
