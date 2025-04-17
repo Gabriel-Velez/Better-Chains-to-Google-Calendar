@@ -116,7 +116,10 @@ def get_shift_times(shift):
     return events
 
 
-print(f"🧪 Loaded {len(parsed_schedule)} shifts to process")
+if all(shift.get("off") for shift in parsed_schedule):
+    print("🕙 All shifts are marked as 'off'. No events to process.")
+else:
+    print(f"📅 Loaded {len(parsed_schedule)} shifts to process")
 
 # 🟢 Main loop that adds events to Google Calendar
 for shift in parsed_schedule:
