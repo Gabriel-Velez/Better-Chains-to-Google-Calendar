@@ -28,36 +28,36 @@ Automatically runs weekly via GitHub Actions
 └── .gitignore
  </pre>
 
-# 🍴 Forking & Customization
+# 🍴 Forking
 
 To use this project with your own BetterChains account:
 
 1.  Fork the repo to your own GitHub account.
 
 2.  Go to your fork’s Settings > Secrets and variables > Actions and add these secrets:
+<pre lang="md">
+BETTERCHAINS_USER
+BETTERCHAINS_PASS
+GOOGLE_TOKEN
+</pre>
 
-   <pre lang="md">
-   BETTERCHAINS_USER
-   BETTERCHAINS_PASS
-   GOOGLE_TOKEN
-   </pre>
+# ⚙️ Customization
 
 Customize shift settings in config_public.py:
 
-   <pre lang="md">
-   Default shift times
-   Travel time
-   Event colors and timezone
-   Week Scraped
-   Betterchanins Organizaton
-   </pre">
-
+- Default shift times
+- Travel time
+- Event colors
+- Timezone
+- Week Scraped
+- Betterchanins Organizaton
 
 # 🤖 Automation
 
-The GitHub Actions workflow runs every Sunday at 11 AM (UTC) to fetch and sync next week's schedule. 
+The GitHub Actions workflow runs every Sunday at 11 AM (UTC) to fetch and sync next week's schedule.
 
-You can change the time by editing GitHub workflow schedule in .github/workflows/betterchains.yml. 
+You can change the time by editing GitHub workflow schedule in .github/workflows/betterchains.yml.
+
    <pre lang="yml">
    on:
       schedule:
