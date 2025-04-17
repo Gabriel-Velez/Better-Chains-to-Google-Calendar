@@ -2,6 +2,14 @@
 
 This repo automates scraping your BetterChains schedule and syncing it to Google Calendar. Designed for Portland Pie, but easily adjustable for other employers on BetterChains.
 
+# 🚀 Getting Started
+
+1. Clone or fork this repo.
+2. Add your secrets to GitHub.
+3. Customize `config_public.py` to fit your shift structure.
+4. (Optional) Run locally with `python main.py` to test.
+5. GitHub Actions will take care of the rest.
+
 # 🧩 Features
 
 Logs into BetterChains using provided credentials
@@ -49,7 +57,7 @@ Run locally:
 python generate_google_token.py
 </pre>
 
-Then paste the output generated in your terminal and token.json into your GitHub secret GOOGLE_TOKEN.
+Then paste the contents of `token.json` into your GitHub secret named `GOOGLE_TOKEN`.
 
 # ⚙️ Customization
 
@@ -94,7 +102,7 @@ You can also trigger it manually via the Actions tab.
 **Enable DRY_RUN mode by setting the environment variable:**
 `DRY_RUN: "true"`
 
-This will simulate calendar creation without actually syncing events — useful for testing.\_
+This will simulate calendar creation without actually syncing events — useful for testing.
 
 # 🙋 FAQ
 
