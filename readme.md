@@ -114,7 +114,7 @@ This will simulate calendar creation without actually syncing events — useful 
 
 **Q:** Will it detect duplicate events?
 
-**A:** YNo. The script does not currently detect or remove existing events. If the same schedule is processed multiple times (e.g., from repeated manual runs or automation), duplicate events will be added to your calendar.
+**A:** No. The script does not currently detect or remove existing events. If the same schedule is processed multiple times (e.g., from repeated manual runs or automation), duplicate events will be added to your calendar.
 To avoid this, make sure your schedule only runs once per week — or manually delete duplicates if needed.
 
 # 📜 License
