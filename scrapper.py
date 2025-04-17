@@ -25,6 +25,8 @@ SHIFT_RULES = {
 
 TRAVEL_TIME_MINUTES = TRAVEL_TIME_DURATION.total_seconds() / 60
 
+DRY_RUN = os.getenv("DRY_RUN", "false").lower() == "true"
+
 # Open the HTML file
 with open("Better Chains - My Schedule.html", "r", encoding="utf-8") as f:
     html = f.read()
@@ -137,9 +139,11 @@ for shift in parsed_schedule:
             "colorId": event["color"]
         }
 
+    if not DRY_RUN:
         added_event = service.events().insert(
             calendarId="primary",
             body=calendar_event
         ).execute()
-
-        print("✅ Created:", added_event.get("summary"), added_event.get("start").get("dateTime"))
+        print("✅ Created:", added_event.get("summary"), added_event["start"].get("dateTime"))
+    else:
+        print("🧪 DRY RUN: Would create event", calendar_event["summary"], calendar_event["start"]["dateTime"])
