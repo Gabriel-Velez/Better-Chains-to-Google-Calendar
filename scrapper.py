@@ -30,6 +30,7 @@ with open(".github/workflows/betterchains.yml", "r") as yml_file:
     workflow_config = yaml.safe_load(yml_file)
 
 DRY_RUN = str(workflow_config.get("DRY_RUN", "false")).lower() == "true"
+print(f"🧪 DRY_RUN mode: {DRY_RUN}")
 
 # Open the HTML file
 with open("Better Chains - My Schedule.html", "r", encoding="utf-8") as f:
