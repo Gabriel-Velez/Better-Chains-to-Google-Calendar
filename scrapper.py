@@ -27,7 +27,6 @@ SHIFT_RULES = {
 }
 
 TRAVEL_TIME_MINUTES = TRAVEL_TIME_DURATION.total_seconds() / 60
-print(f"🧪 DRY_RUN mode: {DRY_RUN}")
 
 # Open the HTML file
 with open("Better Chains - My Schedule.html", "r", encoding="utf-8") as f:
