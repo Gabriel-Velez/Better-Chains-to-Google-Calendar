@@ -33,6 +33,7 @@ Automatically runs weekly via GitHub Actions
 ## 1. 🔐 Environment Secrets (GitHub Actions)
 
 In your repo settings, set the following repository secrets:
+
 <pre lang="md">
 BETTERCHAINS_USER
 BETTERCHAINS_PASS
@@ -49,6 +50,7 @@ _Follow the instructions and paste the output into your GitHub secret GOOGLE_TOK
 # 🔧 Configuration
 
 Open config_public.py to configure:
+
 <pre lang="md">
 Default shift times
 Travel time settings
@@ -84,7 +86,7 @@ _This will simulate calendar creation without actually syncing events — useful
 
 Q: What if my schedule isn’t posted yet?
 
-A: You’ll see a message like 🔴 All shifts are marked as 'off'. No events to process.
+A: You’ll see a message `🕙 All shifts are marked as 'off'. No events to process.`
 
 ---
 
