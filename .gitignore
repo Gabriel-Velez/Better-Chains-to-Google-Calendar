@@ -15,3 +15,6 @@ credentials.json
 
 # Ignore private config
 config_private.py
+
+# Ignore vscode settings
+.vscode/
