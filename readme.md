@@ -61,7 +61,7 @@ The week that is being scraped
 
 ## Example:
 
-<pre lang="<pre lang="md">"> 
+<pre lang="<pre lang="md">
     DEFAULT_SHIFT_START = {
         "Monday": "3:00 PM",
         "Tuesday": "3:00 PM",
