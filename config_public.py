@@ -56,7 +56,9 @@ SHIFT_EVENT_COLOR = "1"
 # -------------------------
 # URL Settings
 # -------------------------
-SCHEDULE_URL = "https://portlandpie.betterchains.com/schedule"
-LOGIN_URL = "https://portlandpie.betterchains.com/user/login"
+BETTERCHAINS_ORG = "portlandpie"
+LOGIN_URL = "https://login.betterchains.com/user/login"
+BASE_URL = f"https://{BETTERCHAINS_ORG}.betterchains.com"
+SCHEDULE_URL = f"{BASE_URL}/schedule"
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
