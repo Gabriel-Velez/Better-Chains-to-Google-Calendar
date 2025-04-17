@@ -41,6 +41,16 @@ BETTERCHAINS_PASS
 GOOGLE_TOKEN
 </pre>
 
+# 🔑 Generate Your Google Token
+
+Run locally:
+
+<pre lang = "nginx">
+python generate_google_token.py
+</pre>
+
+Then paste the output generated in your terminal and token.json into your GitHub secret GOOGLE_TOKEN.
+
 # ⚙️ Customization
 
 Customize shift settings in config_public.py:
