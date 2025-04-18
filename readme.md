@@ -137,13 +137,11 @@ The script will automatically prioritize `config_private.py` if it exists.
 
 # 🙋 FAQ
 
-**Q:** What if my schedule isn’t posted yet?
+### **Q:** What if my schedule isn’t posted yet?
 
 **A:** You’ll see a message `🕙 All shifts are marked as 'off'. No events to process.`
 
----
-
-**Q:** Will it detect duplicate events?
+### **Q:** Will it detect duplicate events?
 
 **A:** No. The script does not currently detect or remove existing events. If the same schedule is processed multiple times (e.g., from repeated manual runs or automation), duplicate events will be added to your calendar.
 To avoid this, make sure your schedule only runs once per week — or manually delete duplicates if needed.
