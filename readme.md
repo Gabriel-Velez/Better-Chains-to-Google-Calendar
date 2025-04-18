@@ -60,7 +60,7 @@ python generate_google_token.py
 
 In your GitHub repo, go to **Settings > Secrets and variables > Actions**, and paste the contents into your GitHub secret named `GOOGLE_TOKEN`.
 
-## 🔐 Getting Your Google Client Secret
+# 🔐 Getting Your Google Client Secret
 
 To allow this script to sync with your Google Calendar, you'll need to generate a `GOOGLE_CLIENT_SECRET` from the Google Cloud Console.
 
