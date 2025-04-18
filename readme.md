@@ -42,7 +42,11 @@ To use this project with your own BetterChains account:
 
 1.  Fork the repo to your own GitHub account.
 
-2.  Go to your fork’s Settings > Secrets and variables > Actions and add these secrets: `BETTERCHAINS_USER`, `BETTERCHAINS_PASS`, `GOOGLE_TOKEN`
+2.  Go to your fork’s Settings > Secrets and variables > Actions and add these secrets:
+
+- `BETTERCHAINS_USER`,
+- `BETTERCHAINS_PASS`,
+- `GOOGLE_TOKEN`
 
 # 🔑 Generate Your Google Token
 
