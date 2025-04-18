@@ -6,9 +6,10 @@ This repo automates scraping your BetterChains schedule and syncing it to Google
 
 1. Clone or fork this repo.
 2. Add your secrets to GitHub.
-3. Customize `config_public.py` to fit your shift structure.
-4. (Optional) Run locally with `python main.py` to test.
-5. GitHub Actions will take care of the rest.
+3. Generate Your Google Token
+4. Get Your Google Client Secret
+5. Customize `config_public.py` to fit your shift structure.
+6. GitHub Actions will take care of the rest.
 
 # 🧩 Features
 
