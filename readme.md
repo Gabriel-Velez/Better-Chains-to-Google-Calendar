@@ -13,15 +13,11 @@ This repo automates scraping your BetterChains schedule and syncing it to Google
 
 # 🧩 Features
 
-Logs into BetterChains using provided credentials
-
-Fetches the upcoming or current week's schedule
-
-Converts shifts into Google Calendar events
-
-Adds optional travel time before and after shifts
-
-Automatically runs weekly via GitHub Actions
+- Logs into BetterChains using provided credentials
+- Fetches the upcoming or current week's schedule
+- Converts shifts into Google Calendar events
+- Adds optional travel time before and after shifts
+- Automatically runs weekly via GitHub Actions
 
 # 📁 Folder Structure
 
