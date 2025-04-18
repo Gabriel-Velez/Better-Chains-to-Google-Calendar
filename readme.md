@@ -128,7 +128,7 @@ GOOGLE_CLIENT_SECRET = """{ ... }"""  # Paste your Google client secret JSON her
 
 - ✅ This file is already excluded via `.gitignore` and will never be uploaded to GitHub.
 - The script will automatically prioritize `config_private.py` if it exists.
-- Then just run `main.py` in your terminal
+- Then just run `python main.py` in your terminal
 
 # 🙋 FAQ
 
