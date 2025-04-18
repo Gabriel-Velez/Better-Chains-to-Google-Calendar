@@ -82,7 +82,7 @@ Customize shift settings in config_public.py:
 - Event colors
 - Timezone
 - Week Scraped
-- Betterchanins Organizaton
+- BetterChains Organization
 
 # 🤖 Automation
 
