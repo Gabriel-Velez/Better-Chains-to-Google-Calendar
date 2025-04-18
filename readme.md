@@ -51,7 +51,7 @@ To use this project with your own BetterChains account:
 To allow this script to create events in your Google Calendar, you'll need to generate a `GOOGLE_TOKEN,` which authorizes access to your calendar on your behalf.
 
 1. Open the terminal and cd to your project file
-2. Run locally: `python generate_google_token.py`
+2. Run locally: `python auth_google.py`
 3. Open the file `token.json` and copy the entire contents.
 4. In your GitHub repo, go to **Settings > Secrets and variables > Actions**, and paste it into your GitHub secret named `GOOGLE_TOKEN`.
 
