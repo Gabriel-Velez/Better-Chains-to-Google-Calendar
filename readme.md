@@ -1,4 +1,4 @@
-# BetterChains Scraper 🧠
+# 📅 BetterChains Schedule Scraper
 
 This repo automates scraping your BetterChains schedule and syncing it to Google Calendar. Designed for Portland Pie, but easily adjustable for other employers on BetterChains.
 
