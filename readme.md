@@ -48,7 +48,7 @@ To use this project with your own BetterChains account:
 - `BETTERCHAINS_USER`
 - `BETTERCHAINS_PASS`
 - `GOOGLE_TOKEN`
-- `GOOGLE_CLIENT_SECRET` ← **Required for authentication with Google APIs**
+- `GOOGLE_CLIENT_SECRET`
 
 # 🔑 Generate Your Google Token
 
