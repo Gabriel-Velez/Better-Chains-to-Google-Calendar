@@ -119,6 +119,22 @@ You can also trigger it manually via the Actions tab.
 
 This will simulate calendar creation without actually syncing events — useful for testing.
 
+# 💻 Local Development (Optional)
+
+If you'd like to run the script locally instead of GitHub Actions, create a file named `config_private.py` in your root directory. This file should contain your personal credentials and token, like so:
+
+<pre lang="python">
+# config_private.py
+BETTERCHAINS_USER = "your_email@example.com"
+BETTERCHAINS_PASS = "your_password"
+GOOGLE_TOKEN = """{ ... }"""  # Paste your token JSON here as a multi-line string
+GOOGLE_CLIENT_SECRET = """{ ... }"""  # Paste your Google client secret JSON here as a multi-line string
+</pre>
+
+✅ This file is already excluded via `.gitignore` and will never be uploaded to GitHub.
+
+The script will automatically prioritize `config_private.py` if it exists.
+
 # 🙋 FAQ
 
 **Q:** What if my schedule isn’t posted yet?
