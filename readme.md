@@ -44,7 +44,6 @@ To use this project with your own BetterChains account:
 - `BETTERCHAINS_USER`
 - `BETTERCHAINS_PASS`
 - `GOOGLE_TOKEN`
-- `GOOGLE_CLIENT_SECRET`
 
 # 🔑 Generate Your Google Token
 
@@ -54,20 +53,6 @@ To allow this script to create events in your Google Calendar, you'll need to ge
 2. Run locally: `python auth_google.py`
 3. Open the file `token.json` and copy the entire contents.
 4. In your GitHub repo, go to **Settings > Secrets and variables > Actions**, and paste it into your GitHub secret named `GOOGLE_TOKEN`.
-
-# 🔐 Getting Your Google Client Secret
-
-To allow this script to sync with your Google Calendar, you'll need to generate a `GOOGLE_CLIENT_SECRET` from the Google Cloud Console.
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/).
-2. Click **Create Project** and make a new project
-3. Navigate to **APIs & Services > Credentials**.
-4. Click **+ Create Credentials** and choose **OAuth client ID**.
-5. Choose **Desktop app** as the application type.
-6. Click **Create**.
-7. Click **Download JSON** — this file contains your `client_id`, `client_secret`, and other OAuth details.
-8. Open the file and copy the entire contents.
-9. In your GitHub repo, go to **Settings > Secrets and variables > Actions**, and paste the contents into your GitHub secret named `GOOGLE_CLIENT_SECRET`.
 
 # ⚙️ Customization
 
