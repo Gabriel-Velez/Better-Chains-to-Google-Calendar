@@ -67,7 +67,7 @@ Customize shift settings in config_public.py:
 
 # 🤖 Automation
 
-The GitHub Actions workflow runs 4AM every Monday UTC (which is 11 PM Sunday EST) to fetch and sync next week's schedule.
+The GitHub Actions workflow runs 3AM every Monday UTC (which is 10 PM Sunday EST) to fetch and sync next week's schedule.
 
 Note: GitHub Actions only supports UTC for scheduling workflows. Be sure to convert from your local timezone to UTC when setting the CRON expression.
 
@@ -76,14 +76,14 @@ You can change the time by editing GitHub workflow schedule in .github/workflows
    <pre lang="yml">
    on:
       schedule:
-         - cron: "0 4 * * 1" # <--HERE
+         - cron: "0 3 * * 1" # <--HERE
       workflow_dispatch:
    </pre>
 
 How to edit the CRON expression
 
    <pre lang="md">
-   0 4 * * 1
+   0 3 * * 1
    ┬ ┬ ┬ ┬ ┬
    │ │ │ │ └──── Day of week (0 = Sunday)
    │ │ │ └────── Month (1 - 12)
