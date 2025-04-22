@@ -99,6 +99,8 @@ You can also trigger it manually via the Actions tab.
 **Enable DRY_RUN mode by setting the environment variable:**
 `DRY_RUN: "true"`
 
+Locaded in `config_public.py`
+
 This will simulate calendar creation without actually syncing events — useful for testing.
 
 # 💻 Local Development (Optional)
