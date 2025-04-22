@@ -42,6 +42,10 @@ email_input.send_keys(BETTERCHAINS_USER)
 password_input.send_keys(BETTERCHAINS_PASS + Keys.RETURN)
 time.sleep(20)
 
+if "login" in driver.current_url:
+    print("❌ Login failed. Please check your credentials.")
+    driver.quit()
+    exit(1)
 
 # 3. Calculate target week's Tuesday
 today = date.today()
@@ -63,9 +67,14 @@ full_schedule_url = f"{SCHEDULE_URL}?date={formatted_date}"
 driver.get(full_schedule_url)
 
 # 6. Wait for schedule to load
-WebDriverWait(driver, 15).until(
-    EC.presence_of_element_located((By.CLASS_NAME, "foh-schedule-shifts"))
-)
+try:
+    WebDriverWait(driver, 15).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "foh-schedule-shifts"))
+    )
+except Exception as e:
+    print("❌ Failed to load schedule page:", str(e))
+    driver.quit()
+    exit(1)
 
 # 7. Save HTML
 html = driver.page_source

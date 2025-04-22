@@ -115,6 +115,17 @@ GOOGLE_CLIENT_SECRET = """{ ... }"""  # Paste your Google client secret JSON her
 - The script will automatically prioritize `config_private.py` if it exists.
 - Then just run `python main.py` in your terminal
 
+## ⚠️ Error Handling
+
+This script includes basic error handling to ensure smooth execution:
+
+- ❌ **Login failure**: If credentials are incorrect or the login page fails to load, the script exits with a helpful message.
+- ❌ **Schedule loading failure**: If the schedule page doesn’t load properly (due to a network issue or site changes), the script will stop and log the error.
+- ❌ **Missing schedule file**: If the expected schedule HTML file isn’t found, the script will exit safely.
+- ❌ **Google Calendar API errors**: Any issues with adding events (e.g., invalid tokens, rate limits) will be logged with clear details.
+
+For troubleshooting, review the logs printed during each run.
+
 # 🙋 FAQ
 
 ### **Q:** What if my schedule isn’t posted yet?

@@ -30,6 +30,10 @@ SHIFT_RULES = {
 TRAVEL_TIME_MINUTES = TRAVEL_TIME_DURATION.total_seconds() / 60
 
 # Open the HTML file
+if not os.path.exists("Better Chains - My Schedule.html"):
+    print("❌ Schedule HTML file not found.")
+    exit(1)
+
 with open("Better Chains - My Schedule.html", "r", encoding="utf-8") as f:
     html = f.read()
 
@@ -41,6 +45,10 @@ day_blocks = soup.find_all("div")
 shift_blocks = soup.find_all("div", class_="foh-schedule-shifts")
 
 parsed_schedule = []
+
+if not parsed_schedule:
+    print("❌ No shift data found in the schedule.")
+    exit(1)
 
 for block in shift_blocks:
     # Get the day label (e.g., "Friday (4/11)")
@@ -146,10 +154,13 @@ for shift in parsed_schedule:
         }
 
         if not DRY_RUN:
-            added_event = service.events().insert(
-                calendarId="primary",
-                body=calendar_event
-            ).execute()
-            print("✅ Created:", added_event.get("summary"), added_event["start"].get("dateTime"))
-        else:
-            print("🧪 DRY RUN: Would create event", calendar_event["summary"], calendar_event["start"]["dateTime"])
+            try:
+                added_event = service.events().insert(
+                    calendarId="primary",
+                    body=calendar_event
+                ).execute()
+                print("✅ Created:", added_event.get("summary"), added_event["start"].get("dateTime"))
+            except Exception as e:
+                print("❌ Failed to create event:", calendar_event["summary"], "-", str(e))
+            else:
+                print("🧪 DRY RUN: Would create event", calendar_event["summary"], calendar_event["start"]["dateTime"])
