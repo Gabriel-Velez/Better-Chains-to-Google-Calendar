@@ -67,26 +67,26 @@ Customize shift settings in config_public.py:
 
 # 🤖 Automation
 
-The GitHub Actions workflow runs every Sunday at 11 AM (UTC) to fetch and sync next week's schedule.
+The GitHub Actions workflow runs 4AM every Monday (which is 11 PM Sunday EST) to fetch and sync next week's schedule.
 
 You can change the time by editing GitHub workflow schedule in .github/workflows/betterchains.yml.
 
    <pre lang="yml">
    on:
       schedule:
-         - cron: "0 15 * * 0" # <--HERE
+         - cron: "0 4 * * 1" # <--HERE
       workflow_dispatch:
    </pre>
 
 How to edit the CRON expression
 
    <pre lang="md">
-   0 15 * * 0
-   ┬ ┬┬ ┬ ┬ ┬
-   │ ││ │ │ └──── Day of week (0 = Sunday)
-   │ ││ │ └────── Month (1 - 12)
-   │ ││ └──────── Day of month (1 - 31)
-   │ └└───────── Hour (0 - 23)
+   0 4 * * 1
+   ┬ ┬ ┬ ┬ ┬
+   │ │ │ │ └──── Day of week (0 = Sunday)
+   │ │ │ └────── Month (1 - 12)
+   │ │ └──────── Day of month (1 - 31)
+   │ └────────── Hour (0 - 23)
    └──────────── Minute (0 - 59)
    </pre>
 
