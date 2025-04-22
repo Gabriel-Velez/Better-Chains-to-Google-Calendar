@@ -2,7 +2,9 @@ name: Export BetterChains Schedule
 
 on:
   schedule:
-    - cron: "0 15 * * 0" # Every Sunday at 11 AM (UTC)
+    # Runs at 4 AM UTC every Monday 
+    # Which is 11 PM Sunday EST / 12 AM Monday EDT
+    - cron: "0 4 * * 1"
   workflow_dispatch:
 
 jobs:
