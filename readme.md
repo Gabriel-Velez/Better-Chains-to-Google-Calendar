@@ -115,7 +115,7 @@ GOOGLE_CLIENT_SECRET = """{ ... }"""  # Paste your Google client secret JSON her
 - The script will automatically prioritize `config_private.py` if it exists.
 - Then just run `python main.py` in your terminal
 
-## ⚠️ Error Handling
+# ⚠️ Error Handling
 
 This script includes basic error handling to ensure smooth execution:
 
