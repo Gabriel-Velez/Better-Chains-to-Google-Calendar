@@ -69,7 +69,7 @@ Customize shift settings in config_public.py:
 
 The GitHub Actions workflow runs 3AM every Monday UTC (which is 10 PM Sunday EST) to fetch and sync next week's schedule.
 
-Note: GitHub Actions only supports UTC for scheduling workflows. Be sure to convert from your local timezone to UTC when setting the CRON expression.
+> Note: GitHub Actions only supports UTC for scheduling workflows. Be sure to convert from your local timezone to UTC when setting the CRON expression.
 
 You can change the time by editing GitHub workflow schedule in .github/workflows/betterchains.yml.
 
