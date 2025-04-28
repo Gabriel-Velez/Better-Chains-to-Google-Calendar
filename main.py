@@ -42,7 +42,11 @@ soup = BeautifulSoup(html, "html.parser")
 
 # Find all day containers
 day_blocks = soup.find_all("div")
-shift_blocks = soup.find_all("div", class_="foh-schedule-shifts")
+shift_blocks = soup.find_all("div", class_="day-body assigned")
+
+if not shift_blocks:
+    # fallback to older structure if needed
+    shift_blocks = soup.find_all("div", class_="foh-schedule-shifts")
 
 parsed_schedule = []
 
