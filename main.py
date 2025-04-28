@@ -56,7 +56,7 @@ if not parsed_schedule:
 
 for block in shift_blocks:
     # Get the day label (e.g., "Friday (4/11)")
-    day_head = block.find("div", class_="day-head")
+    day_head = block.find_previous("div", class_="day-head")
     if not day_head:
         continue
 
