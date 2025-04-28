@@ -42,7 +42,7 @@ soup = BeautifulSoup(html, "html.parser")
 
 # Find all day containers
 day_blocks = soup.find_all("div")
-shift_blocks = soup.find_all("div", class_="day-body assigned")
+shift_blocks = soup.find_all("div", class_=lambda x: x and "day-body" in x and "assigned" in x)
 
 print(f"Found {len(shift_blocks)} shift blocks")
 
