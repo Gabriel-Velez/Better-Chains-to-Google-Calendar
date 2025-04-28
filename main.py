@@ -87,7 +87,9 @@ for block in shift_blocks:
     else:
         parsed_schedule.append({"date": date_iso, "off": True})
 
-
+if not parsed_schedule:
+    print("❌ No shift data found in the schedule.")
+    exit(1)
 
 def get_shift_times(shift):
     date_obj = datetime.strptime(shift["date"], "%Y-%m-%d")
