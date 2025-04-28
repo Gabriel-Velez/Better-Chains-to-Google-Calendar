@@ -52,14 +52,7 @@ if not shift_blocks:
 
 parsed_schedule = []
 
-if not parsed_schedule:
-    print("❌ No shift data found in the schedule.")
-    exit(1)
-
 for block in shift_blocks:
-    print(block.prettify())
-    break  # Stop after the first block for readability
-
     # Get the day label (e.g., "Friday (4/11)")
     day_head = block.find_previous("div", class_="day-head")
     if not day_head:
