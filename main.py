@@ -57,6 +57,9 @@ if not parsed_schedule:
     exit(1)
 
 for block in shift_blocks:
+    print(block.prettify())
+    break  # Stop after the first block for readability
+
     # Get the day label (e.g., "Friday (4/11)")
     day_head = block.find_previous("div", class_="day-head")
     if not day_head:
@@ -90,6 +93,7 @@ for block in shift_blocks:
         parsed_schedule.append({"date": date_iso, "start_time": start_time})
     else:
         parsed_schedule.append({"date": date_iso, "off": True})
+
 
 
 def get_shift_times(shift):
