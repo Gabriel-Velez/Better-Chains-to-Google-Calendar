@@ -158,14 +158,15 @@ for shift in parsed_schedule:
             "colorId": event["color"]
         }
 
-        if not DRY_RUN:
-            try:
-                added_event = service.events().insert(
-                    calendarId="primary",
-                    body=calendar_event
-                ).execute()
-                print("✅ Created:", added_event.get("summary"), added_event["start"].get("dateTime"))
-            except Exception as e:
-                print("❌ Failed to create event:", calendar_event["summary"], "-", str(e))
-            else:
-                print("🧪 DRY RUN: Would create event", calendar_event["summary"], calendar_event["start"]["dateTime"])
+        if DRY_RUN:
+            print("🧪 DRY RUN: Would create event", calendar_event["summary"], calendar_event["start"]["dateTime"])
+            continue
+
+        try:
+            added_event = service.events().insert(
+                calendarId="primary",
+                body=calendar_event
+            ).execute()
+            print("✅ Created:", added_event.get("summary"), added_event["start"].get("dateTime"))
+        except Exception as e:
+            print("❌ Failed to create event:", calendar_event["summary"], "-", str(e))
