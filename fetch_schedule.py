@@ -6,6 +6,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 import time
 import platform
 from datetime import date, timedelta
@@ -21,17 +24,13 @@ options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 
-if platform.system() == "Linux":
-    driver = webdriver.Chrome(options=options)
-else:
-    driver_path = "D:/WebDrivers/chromedriver.exe"
-    driver = webdriver.Chrome(executable_path=driver_path, options=options)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # 1. Go to login page
 driver.get(LOGIN_URL)
 time.sleep(3)
 
-# 2. Fill in login form
+# 2. Fill in login form~
 wait = WebDriverWait(driver, 15)
 email_input = wait.until(EC.presence_of_element_located((By.NAME, "username")))
 password_input = driver.find_element(By.NAME, "password")
